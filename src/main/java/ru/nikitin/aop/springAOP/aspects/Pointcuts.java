@@ -6,11 +6,11 @@ import org.aspectj.lang.annotation.Pointcut;
 @Slf4j
 public class Pointcuts {
 
-    @Pointcut("execution(@ru.nikitin.aop.springAOP.annotations.TrackTime public * * (..)) ")
+    @Pointcut("execution(@ru.nikitin.aop.springAOP.aspects.annotations.TrackTime public * * (..)) ")
     public void forLoggingSync() {
     }
 
-    @Pointcut("execution(@ru.nikitin.aop.springAOP.annotations.TrackAsyncTime public * * (..)) ")
+    @Pointcut("execution(@ru.nikitin.aop.springAOP.aspects.annotations.TrackAsyncTime public * * (..)) ")
     public void forLoggingAsync() {
     }
 

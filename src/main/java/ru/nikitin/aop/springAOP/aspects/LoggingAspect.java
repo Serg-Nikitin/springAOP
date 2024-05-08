@@ -1,10 +1,17 @@
 package ru.nikitin.aop.springAOP.aspects;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.nikitin.aop.springAOP.model.Log;
+import ru.nikitin.aop.springAOP.model.TypeExecution;
+import ru.nikitin.aop.springAOP.services.LogService;
+
+import java.util.Date;
 
 /**
  * Aspect for logging methods
@@ -14,20 +21,33 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class LoggingAspect {
 
+    @Autowired
+    private final LogService service;
+
+    public LoggingAspect(LogService service) {
+        this.service = service;
+    }
+
     @Around("ru.nikitin.aop.springAOP.aspects.Pointcuts.forLoggingSync()")
-    public void aroundSyncMethods(ProceedingJoinPoint joinPoint) throws Throwable {
-        long before = System.currentTimeMillis();
-        joinPoint.proceed();
-        String nameClass = joinPoint.getKind();
-        long after = System.currentTimeMillis();
-        log.info(("\n").concat(nameClass + '=').concat(String.valueOf(after - before)).concat("\n"));
+    public void aroundSyncMethods(ProceedingJoinPoint joinPoint) {
+        writeLog(joinPoint, TypeExecution.SYNC);
     }
 
     @Around("ru.nikitin.aop.springAOP.aspects.Pointcuts.forLoggingAsync()")
-    public void aroundAsyncMethods(ProceedingJoinPoint joinPoint) throws Throwable {
-        long before = System.currentTimeMillis();
-        joinPoint.proceed();
-        long after = System.currentTimeMillis();
-        log.info(("\n").concat(String.valueOf(after - before)).concat("\n"));
+    public void aroundAsyncMethods(ProceedingJoinPoint joinPoint) {
+        writeLog(joinPoint, TypeExecution.ASYNC);
+    }
+
+    private void writeLog(ProceedingJoinPoint joinPoint, TypeExecution type) {
+        String signature = Strings.EMPTY;
+        Date before = new Date();
+        try {
+            joinPoint.proceed();
+            signature = joinPoint.getSignature().toString();
+        } catch (Throwable e) {
+            log.error("writeLog type = ".concat(type.getTypeName()), e);
+        }
+        Date after = new Date();
+        service.save(new Log(before, after, type, signature));
     }
 }

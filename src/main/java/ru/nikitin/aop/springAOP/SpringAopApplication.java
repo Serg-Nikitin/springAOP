@@ -25,6 +25,13 @@ public class SpringAopApplication {
     public void success() {
         log.info("onSuccess");
         service.service();
+        try {
+            Thread.sleep(500);
+            service.asyncService();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        log.info("complete".concat("\n"));
     }
 
 }

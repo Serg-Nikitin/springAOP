@@ -1,4 +1,4 @@
-package ru.nikitin.aop.springAOP.annotations;
+package ru.nikitin.aop.springAOP.aspects.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,5 +7,5 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface TrackAsyncTime {
+public @interface TrackTime {
 }
