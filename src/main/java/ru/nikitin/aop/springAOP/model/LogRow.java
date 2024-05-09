@@ -7,15 +7,10 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 @Entity
-@Table(name = "logs")
+@Table(name = "log_rows")
 @Data
 @NoArgsConstructor
-@NamedEntityGraphs(
-        @NamedEntityGraph(name = "className",
-                attributeNodes = {
-                        @NamedAttributeNode(value = "className")})
-)
-public class Log {
+public class LogRow {
 
     @Id
     @SequenceGenerator(name = "logs_seq", sequenceName = "logs_seq", allocationSize = 1)
@@ -27,19 +22,23 @@ public class Log {
     private Date end;
     @Column(name = "execution_time", nullable = false)
     private long executionTime;
-    @ManyToOne
-    @JoinColumn(name = "class_id", referencedColumnName = "class_id")
-    ClassName className;
+
+    @Column(name = "class")
+    String clazz;
+
+    @Column(name = "method")
+    String method;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "exec_type", nullable = false)
     private TypeExecution type;
 
-    public Log(Date before, Date after, TypeExecution type, ClassName className) {
-        this.start = before;
-        this.end = after;
+    public LogRow(Date start, Date end, Long execute, TypeExecution type, String clazz, String method) {
+        this.start = start;
+        this.end = end;
         this.type = type;
-        this.executionTime = end.getTime() - start.getTime();
-        this.className = className;
+        this.executionTime = this.end.getTime() - this.start.getTime();
+        this.clazz = clazz;
+        this.method = method;
     }
 }

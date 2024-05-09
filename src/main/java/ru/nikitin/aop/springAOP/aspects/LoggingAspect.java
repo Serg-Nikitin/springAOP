@@ -8,8 +8,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.nikitin.aop.springAOP.model.ClassName;
-import ru.nikitin.aop.springAOP.model.Log;
 import ru.nikitin.aop.springAOP.model.TypeExecution;
 import ru.nikitin.aop.springAOP.services.LogService;
 
@@ -41,19 +39,15 @@ public class LoggingAspect {
     }
 
     private void writeLog(ProceedingJoinPoint joinPoint, TypeExecution type) {
-        String clazz = Strings.EMPTY;
-        String method = Strings.EMPTY;
+        Signature signature = null;
         Date before = new Date();
         try {
             joinPoint.proceed();
-            Signature signature = joinPoint.getSignature();
-            clazz = signature.getDeclaringType().getName();
-            method = signature.getName();
-            Object[] args = joinPoint.getArgs();
+            signature = joinPoint.getSignature();
         } catch (Throwable e) {
             log.error("writeLog type = ".concat(type.getTypeName()), e);
         }
         Date after = new Date();
-        service.save(before, after, type);
+        service.save(before, after, type, signature);
     }
 }

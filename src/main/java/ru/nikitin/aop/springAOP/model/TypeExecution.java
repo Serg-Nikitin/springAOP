@@ -10,6 +10,10 @@ public enum TypeExecution {
         this.typeName = typeName;
     }
 
+    public static TypeExecution getType(String type) {
+        return SYNC.getTypeName().equals(type) ? SYNC : ASYNC;
+    }
+
     public String getTypeName() {
         return this.typeName;
     }
