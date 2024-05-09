@@ -10,6 +10,11 @@ import java.util.Date;
 @Table(name = "logs")
 @Data
 @NoArgsConstructor
+@NamedEntityGraphs(
+        @NamedEntityGraph(name = "className",
+                attributeNodes = {
+                        @NamedAttributeNode(value = "className")})
+)
 public class Log {
 
     @Id
@@ -22,20 +27,19 @@ public class Log {
     private Date end;
     @Column(name = "execution_time", nullable = false)
     private long executionTime;
+    @ManyToOne
+    @JoinColumn(name = "class_id", referencedColumnName = "class_id")
+    ClassName className;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "exec_type", nullable = false)
     private TypeExecution type;
 
-    @Column(name = "signature", nullable = false)
-    private String signature;
-
-    public Log(Date start, Date end, TypeExecution type, String signature) {
-        this.start = start;
-        this.end = end;
+    public Log(Date before, Date after, TypeExecution type, ClassName className) {
+        this.start = before;
+        this.end = after;
         this.type = type;
         this.executionTime = end.getTime() - start.getTime();
-        this.signature = signature;
-
+        this.className = className;
     }
 }

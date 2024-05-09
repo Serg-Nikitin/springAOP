@@ -1,12 +1,12 @@
 package ru.nikitin.aop.springAOP.model;
 
 public enum TypeExecution {
-    SYNC("sync", 1),
-    ASYNC("async", 0);
+    SYNC("sync"),
+    ASYNC("async");
 
     private final String typeName;
 
-    TypeExecution(String typeName, int value) {
+    TypeExecution(String typeName) {
         this.typeName = typeName;
     }
 
